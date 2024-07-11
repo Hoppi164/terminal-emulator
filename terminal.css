@@ -1,0 +1,54 @@
+#terminalOutput {
+  width: calc(100% - 20px);
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 10px;
+  border: none;
+}
+
+#terminalInputWrapper {
+  display: flex;
+  width: calc(100% - 20px);
+  padding: 10px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+#terminalPrefix,
+.terminalPrefix {
+  display: inline-block;
+  white-space: nowrap;
+  align-self: center;
+  color: lime;
+}
+
+#terminalInput,
+.commandInput,
+.commandOutput {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  outline: none;
+  color: #fff;
+  background-color: transparent;
+  font-family: monospace;
+  font-size: 16px;
+  flex-grow: 1;
+}
+
+#terminalContainer {
+  width: "100%";
+  height: "100%";
+  display: "flex";
+  flex-direction: "column";
+  justify-content: "flex-start";
+  align-items: "flex-start";
+  background-color: "#000";
+  color: "#fff";
+  font-family: "monospace";
+  font-size: "16px";
+  border: "none";
+  box-sizing: "border-box";
+  position: "relative";
+  z-index: "1";
+}
