@@ -2,72 +2,14 @@ fetch("terminal.html")
   .then((stream) => stream.text())
   .then((text) => define(text));
 
+import { getDefaultFileSystem } from "./utils/getDefaultFileSystem.js";
+
 async function define(html) {
   console.log(html);
   class TerminalEmulator extends HTMLElement {
     fileSystem = {};
     history = [];
     historyIndex = -1;
-
-    getDefaultFileSystem = () => {
-      return {
-        "/": {
-          type: "directory",
-          contents: {
-            home: {
-              type: "directory",
-              contents: {
-                drew: {
-                  type: "directory",
-                  contents: {
-                    "hello-world.txt": {
-                      type: "file",
-                      contents: "Hello, World!",
-                    },
-                  },
-                },
-              },
-            },
-
-            bin: {
-              type: "directory",
-              contents: {
-                ls: {
-                  type: "file",
-                  contents: `#!/bin/bash
-                    echo "hello-world.txt"`,
-                },
-              },
-            },
-
-            etc: {
-              type: "directory",
-              contents: {
-                hosts: {
-                  type: "file",
-                  contents: "",
-                },
-              },
-            },
-
-            var: {
-              type: "directory",
-              contents: {
-                log: {
-                  type: "directory",
-                  contents: {
-                    "access.log": {
-                      type: "file",
-                      contents: "",
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      };
-    };
 
     set value(fileSystem) {
       this.fileSystem = fileSystem;
@@ -81,7 +23,7 @@ async function define(html) {
       super();
       console.log(this);
 
-      this.fileSystem = this.getDefaultFileSystem();
+      this.fileSystem = getDefaultFileSystem();
 
       this.style.width = "100%";
       this.style.height = "100%";
