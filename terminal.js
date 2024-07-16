@@ -4,7 +4,7 @@ fetch("terminal.html")
 
 import { getDefaultFileSystem } from "./utils/getDefaultFileSystem.js";
 import { getDefaultUserData } from "./utils/getDefaultUserData.js";
-import { ls, pwd, cd } from "./commands/index.js";
+import { ls, pwd, cd, whoami } from "./commands/index.js";
 const commandMap = {
   // help:
   // connect: connect,
@@ -22,7 +22,7 @@ const commandMap = {
   // touch: touch,
   // mkdir: mkdir,
   // rmdir: rmdir,
-  // whoami: whoami,
+  whoami: async (userData) => whoami(userData),
   // scan: () => 'Scanning...',
   // hack: () => 'Hacking...',
   // 'scan-network': () => 'Scanning...',

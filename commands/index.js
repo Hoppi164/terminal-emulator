@@ -2,5 +2,6 @@
 import { ls } from "./ls.js";
 import { pwd } from "./pwd.js";
 import { cd } from "./cd.js";
+import { whoami } from "./whoami.js";
 
-export { ls, pwd, cd };
+export { ls, pwd, cd, whoami };
