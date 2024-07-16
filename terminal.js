@@ -119,7 +119,7 @@ async function define(html) {
             commandResult = `${command}: command not found`;
           } else if (error.message) {
             console.error(error);
-            commandResult = error.message;
+            commandResult = `${command}: ${error.message}`;
           } else {
             commandResult = "Unknown error occurred.";
           }

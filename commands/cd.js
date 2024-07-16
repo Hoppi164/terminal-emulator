@@ -22,14 +22,6 @@ export async function cd(userData, fileSystem, command) {
 
   const { newDirectory, absolutePath } = getDir(newDirectoryPath, userData, fileSystem);
 
-  if (newDirectory === "Error: directory not found" || !newDirectory) {
-    return "Error: directory not found";
-  }
-
-  if (newDirectory === "Error: not a directory") {
-    return "Error: not a directory";
-  }
-
   userData.currentWorkingDirectory = newDirectory;
   userData.currentServerPathAbsolute = absolutePath;
 }

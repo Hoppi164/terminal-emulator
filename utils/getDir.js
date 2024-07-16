@@ -18,14 +18,15 @@ export function getDir(newPath, userData, fileSystem) {
     } else {
       newDirectory = newDirectory.contents[nextPathSegment];
       if (!newDirectory) {
-        return "Error: directory not found";
+        throw new Error("No such file or directory");
       }
       if (newDirectory.type !== "directory") {
-        return "Error: not a directory";
+        throw new Error("Not a directory");
       }
       newDirectory = newDirectory;
       absolutePath = `${absolutePath}/${nextPathSegment}`;
     }
   }
+
   return { newDirectory, absolutePath };
 }
