@@ -14,7 +14,6 @@ const commandMap = {
   cd: async (userData, fileSystem, command) => cd(userData, fileSystem, command),
   ls: async (userData, fileSystem) => ls(userData, fileSystem),
   pwd: async (userData, fileSystem) => pwd(userData, fileSystem),
-  // clear: () => '',
   // cat: cat,
   // rm: rm,
   // mv: mv,
@@ -91,6 +90,7 @@ async function define(html) {
 
       // Handle command
       this.handleCommand = async (command) => {
+        this.historyIndex = -1;
         const commandLine = document.createElement("div");
         const outputLine = document.createElement("div");
 
@@ -109,11 +109,15 @@ async function define(html) {
         let commandResult;
         try {
           const terminalCommand = command.split(" ")[0];
-          commandResult = await commandMap[terminalCommand](
-            this.userData,
-            this.fileSystem,
-            command
-          );
+          if (terminalCommand === "clear") {
+            terminalOutput.innerHTML = "";
+          } else {
+            commandResult = await commandMap[terminalCommand](
+              this.userData,
+              this.fileSystem,
+              command
+            );
+          }
         } catch (error) {
           if (error.message.includes("is not a function")) {
             commandResult = `${command}: command not found`;
