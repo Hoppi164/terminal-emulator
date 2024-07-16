@@ -3,11 +3,39 @@ fetch("terminal.html")
   .then((text) => define(text));
 
 import { getDefaultFileSystem } from "./utils/getDefaultFileSystem.js";
+import { getDefaultUserData } from "./utils/getDefaultUserData.js";
+import { ls, pwd, cd } from "./commands/index.js";
+const commandMap = {
+  // help:
+  // connect: connect,
+  // disconnect: disconnect,
+  // login: login,
+  // logout: logout,
+  cd: async (userData, fileSystem, command) => cd(userData, fileSystem, command),
+  ls: async (userData, fileSystem) => ls(userData, fileSystem),
+  pwd: async (userData, fileSystem) => pwd(userData, fileSystem),
+  // clear: () => '',
+  // cat: cat,
+  // rm: rm,
+  // mv: mv,
+  // cp: cp,
+  // touch: touch,
+  // mkdir: mkdir,
+  // rmdir: rmdir,
+  // whoami: whoami,
+  // scan: () => 'Scanning...',
+  // hack: () => 'Hacking...',
+  // 'scan-network': () => 'Scanning...',
+  // getAllServers: getAllServers,
+  // getRandomServerIP: getRandomServerIP,
+  // getRandomServer: getRandomServer,
+  // getUserData: getUserData
+};
 
 async function define(html) {
-  console.log(html);
   class TerminalEmulator extends HTMLElement {
     fileSystem = {};
+    userData = {};
     history = [];
     historyIndex = -1;
 
@@ -21,9 +49,9 @@ async function define(html) {
 
     constructor() {
       super();
-      console.log(this);
 
       this.fileSystem = getDefaultFileSystem();
+      this.userData = getDefaultUserData(this.fileSystem);
 
       this.style.width = "100%";
       this.style.height = "100%";
@@ -43,8 +71,6 @@ async function define(html) {
       var shadowRoot = this.attachShadow({ mode: "open" });
       shadowRoot.innerHTML = html;
 
-      console.log(shadowRoot);
-
       const terminalOutput = shadowRoot.querySelector("#terminalOutput");
       const terminalInputWrapper = shadowRoot.querySelector("#terminalInputWrapper");
       const terminalInput = shadowRoot.querySelector("#terminalInput");
@@ -55,16 +81,16 @@ async function define(html) {
       terminalInput.focus();
 
       // Handle keydown events
-      terminalInput.addEventListener("keydown", (e) => {
+      terminalInput.addEventListener("keydown", async (e) => {
         if (e.key === "Enter") {
           const command = terminalInput.value;
           terminalInput.value = "";
-          this.handleCommand(command);
+          await this.handleCommand(command);
         }
       });
 
       // Handle command
-      this.handleCommand = (command) => {
+      this.handleCommand = async (command) => {
         const commandLine = document.createElement("div");
         const outputLine = document.createElement("div");
 
@@ -80,14 +106,30 @@ async function define(html) {
         terminalOutput.appendChild(commandLine);
 
         const outputText = document.createElement("span");
-        // outputText.textContent = this.executeCommand(command);
-        outputText.textContent = `${command}: command not found`;
+        let commandResult;
+        try {
+          const terminalCommand = command.split(" ")[0];
+          commandResult = await commandMap[terminalCommand](
+            this.userData,
+            this.fileSystem,
+            command
+          );
+        } catch (error) {
+          if (error.message.includes("is not a function")) {
+            commandResult = `${command}: command not found`;
+          } else if (error.message) {
+            console.error(error);
+            commandResult = error.message;
+          } else {
+            commandResult = "Unknown error occurred.";
+          }
+        }
+
+        outputText.textContent = commandResult;
         outputLine.appendChild(outputText);
         terminalOutput.appendChild(outputLine);
 
         this.history.push({ command, output: outputText.textContent });
-        console.log(this.history);
-        console.log(this.fileSystem);
       };
 
       // onclick: focus the terminalInput
