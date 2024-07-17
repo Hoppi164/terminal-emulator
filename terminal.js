@@ -31,12 +31,20 @@ const commandMap = {
   // getUserData: getUserData
 };
 
+// Cancel the event
+window.onbeforeunload = function (e) {
+  e.preventDefault();
+  // Chrome requires returnValue to be set
+  e.returnValue = "";
+};
+
 async function define(html) {
   class TerminalEmulator extends HTMLElement {
     fileSystem = {};
     userData = {};
     history = [];
     historyIndex = -1;
+    lastKeyEvent = null;
 
     set value(fileSystem) {
       this.fileSystem = fileSystem;
@@ -172,6 +180,82 @@ async function define(html) {
 
           terminalOutput.innerHTML = "";
         }
+
+        // Make the tab key autocomplete the current command
+        if (e.key === "Tab") {
+          e.preventDefault();
+          const currentCommand = terminalInput.value;
+          const currentCommandParts = currentCommand.split(" ");
+          const currentCommandPrefix = currentCommandParts[0];
+          const currentCommandSuffix = currentCommandParts.slice(1).join(" ");
+          const matchingCommands = Object.keys(commandMap).filter((command) =>
+            command.startsWith(currentCommandPrefix)
+          );
+
+          if (matchingCommands.length === 1 && !currentCommandSuffix) {
+            terminalInput.value = `${matchingCommands[0]} `;
+          }
+
+          // If tab pressed multiple times, show all matching commands
+          if (matchingCommands.length > 1) {
+            const timeSinceLastKey = e?.timeStamp - this.lastKeyEvent?.timeStamp;
+            const wasLastKeyTab = this.lastKeyEvent?.key === "Tab";
+            if (timeSinceLastKey < 500 && wasLastKeyTab) {
+              const commandLine = document.createElement("div");
+              const commandPrefix = document.createElement("span");
+              commandPrefix.textContent = "drew@Work-Dev-Laptop:~$ ";
+              commandPrefix.setAttribute("class", "terminalPrefix");
+              commandLine.appendChild(commandPrefix);
+
+              const commandText = document.createElement("span");
+              commandText.setAttribute("class", "commandInput");
+              commandText.textContent = currentCommandPrefix;
+              commandLine.appendChild(commandText);
+              terminalOutput.appendChild(commandLine);
+
+              const commandElement = document.createElement("div");
+              commandElement.textContent = `\n\n${matchingCommands.join("  ")}`;
+              terminalOutput.appendChild(commandElement);
+            }
+          }
+
+          // if the command has a suffix search for files that match the suffix
+          if (currentCommandSuffix || matchingCommands.length === 1) {
+            const currentDir = this.userData.currentWorkingDirectory;
+            const currentDirFiles = Object.keys(currentDir.contents);
+            const matchingFiles = currentDirFiles.filter((file) =>
+              file.startsWith(currentCommandSuffix)
+            );
+            if (matchingFiles.length === 1) {
+              terminalInput.value = `${matchingCommands[0]} ${matchingFiles[0]}`;
+            }
+
+            // If tab pressed multiple times, show all matching files
+            if (matchingFiles.length > 1) {
+              const timeSinceLastKey = e?.timeStamp - this.lastKeyEvent?.timeStamp;
+              const wasLastKeyTab = this.lastKeyEvent?.key === "Tab";
+              if (timeSinceLastKey < 500 && wasLastKeyTab) {
+                const commandLine = document.createElement("div");
+                const commandPrefix = document.createElement("span");
+                commandPrefix.textContent = "drew@Work-Dev-Laptop:~$ ";
+                commandPrefix.setAttribute("class", "terminalPrefix");
+                commandLine.appendChild(commandPrefix);
+
+                const commandText = document.createElement("span");
+                commandText.setAttribute("class", "commandInput");
+                commandText.textContent = currentCommandPrefix;
+                commandLine.appendChild(commandText);
+                terminalOutput.appendChild(commandLine);
+
+                const commandElement = document.createElement("div");
+                commandElement.textContent = `\n\n${matchingFiles.join("  ")}`;
+                terminalOutput.appendChild(commandElement);
+              }
+            }
+          }
+        }
+
+        this.lastKeyEvent = e;
       });
     }
   }
