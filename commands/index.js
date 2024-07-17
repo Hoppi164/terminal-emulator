@@ -3,5 +3,6 @@ import { ls } from "./ls.js";
 import { pwd } from "./pwd.js";
 import { cd } from "./cd.js";
 import { whoami } from "./whoami.js";
+import { cat } from "./cat.js";
 
-export { ls, pwd, cd, whoami };
+export { ls, pwd, cd, whoami, cat };

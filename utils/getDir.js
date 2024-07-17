@@ -20,9 +20,7 @@ export function getDir(newPath, userData, fileSystem) {
       if (!newDirectory) {
         throw new Error("No such file or directory");
       }
-      if (newDirectory.type !== "directory") {
-        throw new Error("Not a directory");
-      }
+
       newDirectory = newDirectory;
       absolutePath = `${absolutePath}/${nextPathSegment}`;
     }
