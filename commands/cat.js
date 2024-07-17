@@ -16,8 +16,8 @@ export async function cat(userData, fileSystem, command) {
     return "Error: no file specified";
   }
 
-  const { newDirectory } = getDir(filePath, userData, fileSystem);
-  const file = newDirectory;
+  const { dir } = getDir(filePath, userData, fileSystem);
+  const file = dir;
   if (file.type === "directory") {
     throw new Error("Is a directory");
   }

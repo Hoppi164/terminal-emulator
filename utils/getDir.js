@@ -17,14 +17,9 @@ export function getDir(newPath, userData, fileSystem) {
       continue;
     } else {
       newDirectory = newDirectory.contents[nextPathSegment];
-      if (!newDirectory) {
-        throw new Error("No such file or directory");
-      }
-
-      newDirectory = newDirectory;
       absolutePath = `${absolutePath}/${nextPathSegment}`;
     }
   }
 
-  return { newDirectory, absolutePath };
+  return { dir: newDirectory, path: absolutePath };
 }

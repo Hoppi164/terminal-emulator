@@ -20,12 +20,16 @@ export async function cd(userData, fileSystem, command) {
     return "Error: no directory specified";
   }
 
-  const { newDirectory, absolutePath } = getDir(newDirectoryPath, userData, fileSystem);
+  const { dir, path } = getDir(newDirectoryPath, userData, fileSystem);
 
-  if (newDirectory.type !== "directory") {
+  if (!dir) {
+    throw new Error("No such file or directory");
+  }
+  
+  if (dir.type !== "directory") {
     throw new Error("Not a directory");
   }
   
-  userData.currentWorkingDirectory = newDirectory;
-  userData.currentServerPathAbsolute = absolutePath;
+  userData.currentWorkingDirectory = dir;
+  userData.currentServerPathAbsolute = path;
 }

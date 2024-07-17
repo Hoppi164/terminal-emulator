@@ -4,7 +4,7 @@ fetch("terminal.html")
 
 import { getDefaultFileSystem } from "./utils/getDefaultFileSystem.js";
 import { getDefaultUserData } from "./utils/getDefaultUserData.js";
-import { ls, pwd, cd, whoami, cat } from "./commands/index.js";
+import { ls, pwd, cd, whoami, cat, cp } from "./commands/index.js";
 const commandMap = {
   // help:
   // connect: connect,
@@ -17,7 +17,7 @@ const commandMap = {
   cat: async (userData, fileSystem, command) => cat(userData, fileSystem, command),
   // rm: rm,
   // mv: mv,
-  // cp: cp,
+  cp: async (userData, fileSystem, command) => cp(userData, fileSystem, command),
   // touch: touch,
   // mkdir: mkdir,
   // rmdir: rmdir,
