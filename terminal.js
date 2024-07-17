@@ -154,7 +154,7 @@ async function define(html) {
           if (this.historyIndex > 0) {
             this.historyIndex--;
           }
-          terminalInput.value = this.history[this.historyIndex].command;
+          terminalInput.value = this.history[this.historyIndex]?.command || "";
         } else if (e.key === "ArrowDown") {
           if (this.historyIndex < this.history.length - 1 && this.historyIndex !== -1) {
             this.historyIndex++;
